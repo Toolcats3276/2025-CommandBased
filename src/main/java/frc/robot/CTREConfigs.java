@@ -1,16 +1,21 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 public final class CTREConfigs {
     public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
+
     public CANcoderConfiguration armCANcoderConfig = new CANcoderConfiguration();
     public CANcoderConfiguration elevatorCANCoderConfig = new CANcoderConfiguration();
     public CANcoderConfiguration wristCANcoderConfig = new CANcoderConfiguration();
+
+    public TalonFXConfiguration rightInfeedConfig = new TalonFXConfiguration();
 
     public CTREConfigs(){
         /** Swerve CANCoder Configuration */
@@ -24,6 +29,8 @@ public final class CTREConfigs {
         // wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
         wristCANcoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
         wristCANcoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+
+
         /** Swerve Angle Motor Configurations */
         /* Motor Inverts and Neutral Mode */
         swerveAngleFXConfig.MotorOutput.Inverted = Constants.Swerve.angleMotorInvert;

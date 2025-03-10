@@ -17,11 +17,12 @@ import frc.robot.subsystems.SensorSS;
 
 public class CompCoCommand extends SequentialCommandGroup{
 
-
+    public boolean endCommand = false;
 
     public CompCoCommand(WristSS s_Wrist, ArmSS s_Arm, ElevatorSS s_Elevator, InfeedSS s_Infeed, SensorSS s_Sensor) {
 
         addCommands(
+            new RepeatCommand(
                 new ConditionalCommand(  
                     // algae comp commands (barge, processor, etc.)    
                     new ConditionalCommand(
@@ -30,13 +31,17 @@ public class CompCoCommand extends SequentialCommandGroup{
                             new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.ALGAE_INFEED_PID_OUTPUT),
                             new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
                             new ArmPIDCommand(s_Arm, ArmConstants.COMP, ArmConstants.MAX_PID_OUTPUT), 
+                            new InfeedCommand(s_Infeed, 0, 0),
                             new InstantCommand(() -> s_Infeed.setVoltage(1)),
                             new InstantCommand(() -> s_Sensor.setInfeedState(false)),
-                            new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND))
+                            new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND)),
+                            new InstantCommand(() -> endCommand = true)
                         ), 
                         // before elevator is down
                         new ParallelCommandGroup(
+                            new InstantCommand(() -> endCommand = false),
                             new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
+                            new InfeedCommand(s_Infeed, 0, 0),
                             new InstantCommand(() -> s_Infeed.setVoltage(1)),
                             new InstantCommand(() -> s_Sensor.setInfeedState(false)),
                             new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND))
@@ -54,9 +59,10 @@ public class CompCoCommand extends SequentialCommandGroup{
                                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
                                 new ArmPIDCommand(s_Arm, ArmConstants.COMP, ArmConstants.MAX_PID_OUTPUT), 
                                 new SequentialCommandGroup(
-                                    new InfeedCommand(s_Infeed, -0.25),
-                                    new WaitCommand(0.2),
-                                    new InfeedCommand(s_Infeed, 0)
+                                    new InfeedCommand(s_Infeed, -0.18, -0.18),
+                                    new WaitCommand(0.06),
+                                    new InfeedCommand(s_Infeed, 0, 0),
+                                    new InstantCommand(() -> endCommand = true)
                                 ),
                                 new InstantCommand(() -> s_Sensor.setInfeedState(false)),
                                 new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND))
@@ -66,24 +72,30 @@ public class CompCoCommand extends SequentialCommandGroup{
                                 new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.MAX_PID_OUTPUT),
                                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
                                 new ArmPIDCommand(s_Arm, ArmConstants.COMP, ArmConstants.MAX_PID_OUTPUT), 
-                                new InfeedCommand(s_Infeed, 0),
+                                new InfeedCommand(s_Infeed, 0, 0),
                                 new InstantCommand(() -> s_Sensor.setInfeedState(false)),
-                                new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND))
+                                new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND)),
+                                new InstantCommand(() -> endCommand = true)
+
                             ), 
-                            () -> s_Arm.returnSetPoint() == ArmConstants.L4),
+                            () -> s_Arm.returnSetPoint() == ArmConstants.L4 ||
+                                  s_Arm.returnSetPoint() == ArmConstants.L3 ||
+                                  s_Arm.returnSetPoint() == ArmConstants.L2),
+                                  
                     // before elevator is down
                         new ParallelCommandGroup(
                             new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
-                            new InfeedCommand(s_Infeed, 0),
+                            new InfeedCommand(s_Infeed, 0, 0),
                             new InstantCommand(() -> s_Sensor.setInfeedState(false)),
-                            new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND))
+                            new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND)),
+                            new InstantCommand(() -> endCommand = false)
                         ), 
                         () -> s_Elevator.atCompPose()
                     ),
 
                     () -> s_Sensor.algaeSensed()
-                
-            )
+                )
+            ).until(() -> endCommand)
 
         );
         addRequirements(s_Wrist, s_Arm, s_Elevator, s_Infeed);

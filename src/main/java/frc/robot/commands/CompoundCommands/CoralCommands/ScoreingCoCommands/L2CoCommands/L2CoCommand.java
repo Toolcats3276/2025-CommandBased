@@ -26,9 +26,9 @@ public class L2CoCommand extends SequentialCommandGroup{
                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.L2, ElevatorConstants.MAX_PID_OUTPUT),
                 new SequentialCommandGroup(
                     new WaitCommand(0.375),
-                    new InfeedCommand(s_Infeed, 0.2),
-                    new WaitCommand(0.175),
-                    new InfeedCommand(s_Infeed, 0)
+                    new InfeedCommand(s_Infeed, 0.18, 0.18),
+                    new WaitCommand(0.08),
+                    new InfeedCommand(s_Infeed, 0, 0)
                 )
             )
         );

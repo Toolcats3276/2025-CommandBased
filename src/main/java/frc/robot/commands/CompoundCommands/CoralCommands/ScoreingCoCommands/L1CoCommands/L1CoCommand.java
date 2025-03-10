@@ -24,7 +24,7 @@ public class L1CoCommand extends SequentialCommandGroup{
                 new ArmPIDCommand(s_Arm, ArmConstants.L1, ArmConstants.MAX_PID_OUTPUT),
                 new WristPIDCommand(s_Wrist, WristConstants.L1, WristConstants.MAX_PID_OUTPUT),
                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.L1, ElevatorConstants.MAX_PID_OUTPUT),
-                new InfeedCommand(s_Infeed, 0)                
+                new InfeedCommand(s_Infeed, 0, 0)                
             )
         );
         addRequirements(s_Wrist, s_Arm, s_Elevator, s_Infeed);

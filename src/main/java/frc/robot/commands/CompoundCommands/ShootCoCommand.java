@@ -3,6 +3,7 @@ package frc.robot.commands.CompoundCommands;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.InfeedConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.commands.BaseCommands.ArmCommands.ArmPIDCommand;
 import frc.robot.commands.BaseCommands.ElevatorCommands.ElevatorPIDCommand;
@@ -28,19 +29,19 @@ public class ShootCoCommand extends SequentialCommandGroup{
                         //while true
                         new ConditionalCommand(
                             new SequentialCommandGroup(
-                                new InfeedCommand(s_Infeed, 1),
+                                new InfeedCommand(s_Infeed, InfeedConstants.CORAL_SHOT, InfeedConstants.CORAL_SHOT),
                                 new WaitCommand(0.25), //FLIP BACK DELAY
                                 new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.MAX_PID_OUTPUT)
                             ),
                             new ConditionalCommand(
                                 new ConditionalCommand(
-                                    new InfeedCommand(s_Infeed, 1),
-                                    new InfeedCommand(s_Infeed, -1),
+                                    new InfeedCommand(s_Infeed, InfeedConstants.CORAL_SHOT, InfeedConstants.CORAL_SHOT),
+                                    new InfeedCommand(s_Infeed, -InfeedConstants.CORAL_SHOT, -InfeedConstants.CORAL_SHOT),
                                     () -> s_Sensor.coralSensed()
                                 ),
                                 new ConditionalCommand(
-                                    new InfeedCommand(s_Infeed, 0.3),
-                                    new InfeedCommand(s_Infeed, 1),
+                                    new InfeedCommand(s_Infeed, 0.3, 0.3),
+                                    new InfeedCommand(s_Infeed, InfeedConstants.CORAL_SHOT, InfeedConstants.CORAL_SHOT),
                                     () -> s_Arm.returnSetPoint() == ArmConstants.L1_INVERSE),
 
                                 () -> s_Arm.returnSetPoint() == ArmConstants.COMP),
@@ -51,7 +52,7 @@ public class ShootCoCommand extends SequentialCommandGroup{
                         //while false
                         new ConditionalCommand(
                             new SequentialCommandGroup(
-                                new InfeedCommand(s_Infeed, -1),
+                                new InfeedCommand(s_Infeed, -InfeedConstants.CORAL_SHOT, -InfeedConstants.CORAL_SHOT),
                                 new WaitCommand(0.25),//FLIP BACK DELAY
                                 new WristPIDCommand(s_Wrist, WristConstants.L4_FLIP_BACK, WristConstants.MAX_PID_OUTPUT)
                             ),
@@ -61,7 +62,7 @@ public class ShootCoCommand extends SequentialCommandGroup{
                             //     () -> s_Arm.returnSetPoint() == ArmConstants.L1_INVERSE
                             // ),
 
-                                new InfeedCommand(s_Infeed, -1),
+                                new InfeedCommand(s_Infeed, -InfeedConstants.CORAL_SHOT, -InfeedConstants.CORAL_SHOT),
 
                             () -> s_Arm.returnSetPoint() == ArmConstants.L4
                         ),

@@ -79,9 +79,9 @@ public class L4CoCommand extends SequentialCommandGroup{
                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.L4, ElevatorConstants.Elevator_Test_PID_OUTPUT),
                 new SequentialCommandGroup(
                     new WaitCommand(0.5),
-                    new InfeedCommand(s_Infeed, 0.25),
-                    new WaitCommand(0.25),
-                    new InfeedCommand(s_Infeed, 0)
+                    new InfeedCommand(s_Infeed, 0.18, 0.18),
+                    new WaitCommand(0.08),
+                    new InfeedCommand(s_Infeed, 0, 0)
                 )
             )
             

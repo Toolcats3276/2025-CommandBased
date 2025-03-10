@@ -28,12 +28,12 @@ public class CoralSourceInfeedCoCommand extends SequentialCommandGroup{
                     new ArmPIDCommand(s_Arm, ArmConstants.CORAL_SOURCE_INFEED, ArmConstants.MAX_PID_OUTPUT),
                     new WristPIDCommand(s_Wrist, WristConstants.CORAL_SOURCE_INFEED, WristConstants.MAX_PID_OUTPUT),
                     new ElevatorPIDCommand(s_Elevator, ElevatorConstants.CORAL_SOURCE_INFEED, ElevatorConstants.MAX_PID_OUTPUT),
-                    new InfeedCommand(s_Infeed, InfeedConstants.INFEED)
+                    new InfeedCommand(s_Infeed, InfeedConstants.LEFT_CORAL_INFEED, InfeedConstants.RIGHT_CORAL_INFEED)
                 ), 
                 new ParallelCommandGroup(
                     new WristPIDCommand(s_Wrist, WristConstants.CORAL_SOURCE_INFEED, WristConstants.MAX_PID_OUTPUT),
                     new ElevatorPIDCommand(s_Elevator, ElevatorConstants.CORAL_SOURCE_INFEED, ElevatorConstants.MAX_PID_OUTPUT),
-                    new InfeedCommand(s_Infeed, InfeedConstants.INFEED)
+                    new InfeedCommand(s_Infeed, InfeedConstants.LEFT_CORAL_INFEED, InfeedConstants.RIGHT_CORAL_INFEED)
                 ),
                 () -> s_Elevator.atCompPose())
 

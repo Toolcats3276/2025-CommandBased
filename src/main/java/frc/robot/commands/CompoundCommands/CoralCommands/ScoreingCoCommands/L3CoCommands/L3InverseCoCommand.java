@@ -29,7 +29,7 @@ public class L3InverseCoCommand extends SequentialCommandGroup{
                 // ),
                 new WristPIDCommand(s_Wrist, WristConstants.L3_INVERSE, WristConstants.MAX_PID_OUTPUT),
                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.L3_INVERSE, ElevatorConstants.MAX_PID_OUTPUT),
-                new InfeedCommand(s_Infeed, 0)
+                new InfeedCommand(s_Infeed, 0, 0)
             )
         );
         addRequirements(s_Wrist, s_Arm, s_Elevator, s_Infeed);

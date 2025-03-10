@@ -43,7 +43,7 @@ public class AlgaeInfeedL1SensorCoCommand extends SequentialCommandGroup{
                             new ArmPIDCommand(s_Arm, ArmConstants.ALGAE_INFEED_L1, ArmConstants.MAX_PID_OUTPUT),
                             new WristPIDCommand(s_Wrist, WristConstants.ALGAE_INFEED_L1, WristConstants.MAX_PID_OUTPUT),
                             new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ALGAE_INFEED_L1, ElevatorConstants.MAX_PID_OUTPUT),
-                            new InfeedCommand(s_Infeed, InfeedConstants.INFEED)
+                            new InfeedCommand(s_Infeed, InfeedConstants.ALGAE_INFEED, InfeedConstants.ALGAE_INFEED)
                             // new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_L2))
                         ),
                     //condition 

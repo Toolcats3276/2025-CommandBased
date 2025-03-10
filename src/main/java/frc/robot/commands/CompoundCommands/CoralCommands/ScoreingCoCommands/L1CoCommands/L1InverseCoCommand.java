@@ -24,7 +24,7 @@ public class L1InverseCoCommand extends SequentialCommandGroup{
                 new ArmPIDCommand(s_Arm, ArmConstants.L1_INVERSE, ArmConstants.MAX_PID_OUTPUT),
                 new WristPIDCommand(s_Wrist, WristConstants.L1_INVERSE, WristConstants.MAX_PID_OUTPUT),
                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.L1_INVERSE, ElevatorConstants.MAX_PID_OUTPUT),
-                new InfeedCommand(s_Infeed, 0)
+                new InfeedCommand(s_Infeed, 0, 0)
             )
         );
         addRequirements(s_Wrist, s_Arm, s_Elevator, s_Infeed);

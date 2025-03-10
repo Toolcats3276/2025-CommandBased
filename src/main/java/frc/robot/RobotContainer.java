@@ -29,6 +29,7 @@ import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeed
 import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeedCommands.AlgaeInfeedL2SensorCoCommand;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.ScoringCommands.AlgaeToggleScoreCoCommand;
 import frc.robot.commands.CompoundCommands.Climb.ClimbCoCommand;
+import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.CoralInfeedCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.CoralInfeedSensorCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.ToggleCoralInfeedCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.ToggleCoralInfeedStateCoCommand;
@@ -156,7 +157,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Back L4", new L4CoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed));
         NamedCommands.registerCommand("Shoot", new ShootCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor));
         NamedCommands.registerCommand("Comp", new CompCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
-        NamedCommands.registerCommand("Infeed", new CoralInfeedSensorCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
+        NamedCommands.registerCommand("Infeed", new CoralInfeedSensorCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
+            .until(() -> CoralInfeedSensorCommand.endCommand));
         
         
         AutoChooser = new SendableChooser<Command>();
@@ -198,7 +200,7 @@ public class RobotContainer {
 
 
         // good infeed commandsVVVVVVV
-        CoralInfeed.onTrue(new ToggleCoralInfeedCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor, CoralInfeed)
+        CoralInfeed.onTrue(new ToggleCoralInfeedCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor)
             .until(() -> s_Sensor.endCoralInfeedCommand())
             .handleInterrupt(() -> new InstantCommand(() -> s_Sensor.setInfeedState(false))));
 

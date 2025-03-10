@@ -37,7 +37,7 @@ public final class Constants {
         //Infeeds
         public static final double COMP = 0.428;
 
-        public static final double CORAL_INFEED = 0.345;//.342
+        public static final double CORAL_INFEED = 0.348;//.345
         // public static final double CORAL_SOURCE_INFEED = 0.533;
         public static final double CORAL_SOURCE_INFEED = 0.527;
 
@@ -61,7 +61,7 @@ public final class Constants {
         public static final double L3_INVERSE = 0.497;
 
         // public static final double L4 = 0.583;
-        public static final double L4 = 0.577;//.583
+        public static final double L4 = 0.58;//.583 //0.577
         public static final double L4_INVERSE = 0.535;//.53
         // public static final double L4_INVERSE = 0.539;
 
@@ -90,7 +90,7 @@ public final class Constants {
     }
 
     public static final class WristConstants{
-        public static final int WRIST_MOTOR_ID = 61;
+        public static final int WRIST_MOTOR_ID = 60;
         public static final int WRIST_CANCODER_ID = 6; 
 
         //Comp
@@ -158,11 +158,11 @@ public final class Constants {
         public static final double L1 = 0.1;
         public static final double L1_INVERSE = 0.5;
 
-        public static final double L2 = 0.25;
+        public static final double L2 = 0.2; //0.25;
         public static final double L2_INVERSE = 1.26;
 
-        public static final double L3 = 4.45;
-        public static final double L3_INVERSE = 4.45;
+        public static final double L3 = 4.45; //0.45
+        public static final double L3_INVERSE = 4.65;
 
         public static final double L4 = 10.55;
         public static final double L4_INVERSE = 10.4;
@@ -189,11 +189,16 @@ public final class Constants {
     }
 
     public static final class InfeedConstants{
-        public static final int Infeed_Motor_ID = 62;
+        public static final int Infeed_Left_Motor_ID = 61;
+        public static final int Infeed_Right_Motor_ID = 62;
 
-        public static final double INFEED = 1;
+        public static final double ALGAE_INFEED = 1;
+        public static final double LEFT_CORAL_INFEED = 1;
+        public static final double RIGHT_CORAL_INFEED = 0.6;
 
-        public static final double IDLE_ALGAE_VOLTAGE = 1.5;
+        public static final double IDLE_ALGAE_VOLTAGE = 1;
+
+        public static final double CORAL_SHOT = 0.65;
 
         public static final String ALGAE_INFEED_GROUND = "Ground Infeed";
         public static final String ALGAE_INFEED_L1 = "L1 Infeed";

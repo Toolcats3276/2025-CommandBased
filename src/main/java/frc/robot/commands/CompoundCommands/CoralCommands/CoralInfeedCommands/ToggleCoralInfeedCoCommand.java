@@ -59,7 +59,7 @@ public class ToggleCoralInfeedCoCommand extends SequentialCommandGroup{
 
 
 
-    public ToggleCoralInfeedCoCommand(ArmSS s_Arm, InfeedSS s_Infeed, WristSS s_Wrist, ElevatorSS s_Elevator, SensorSS s_Sensor, BooleanSupplier endRepeatCommand) {
+    public ToggleCoralInfeedCoCommand(ArmSS s_Arm, InfeedSS s_Infeed, WristSS s_Wrist, ElevatorSS s_Elevator, SensorSS s_Sensor) {
 
         addCommands(
             new RepeatCommand(
@@ -71,7 +71,7 @@ public class ToggleCoralInfeedCoCommand extends SequentialCommandGroup{
                             new SequentialCommandGroup(
                                 new ParallelCommandGroup(
                                     new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.MAX_PID_OUTPUT),
-                                    new InfeedCommand(s_Infeed, 0)
+                                    new InfeedCommand(s_Infeed, 0, 0)
                                 ),
                                 new WaitCommand(0.25),
                                 new ParallelCommandGroup(
@@ -82,10 +82,10 @@ public class ToggleCoralInfeedCoCommand extends SequentialCommandGroup{
                             ),
                             //on false
                             new SequentialCommandGroup(
-                                new InfeedCommand(s_Infeed, 0),
-                                new InfeedCommand(s_Infeed, -0.23),
+                                new InfeedCommand(s_Infeed, 0, 0),
+                                new InfeedCommand(s_Infeed, -0.23, -0.23),
                                 new WaitCommand(0.2),
-                                new InfeedCommand(s_Infeed, 0),
+                                new InfeedCommand(s_Infeed, 0, 0),
                                 new InstantCommand(() -> s_Sensor.setEndCoralInfeedCommand(true))
                             ),
                             () -> s_Sensor.getInfeedState()),
@@ -95,7 +95,7 @@ public class ToggleCoralInfeedCoCommand extends SequentialCommandGroup{
                             new InstantCommand(() -> s_Sensor.setEndCoralInfeedCommand(false)),
                             new ConditionalCommand(
                                 //on true
-                                new CoralInfeedCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed),
+                                new CoralInfeedCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor),
                                 //on false
                                 new CoralSourceInfeedCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed),
                                 //condition

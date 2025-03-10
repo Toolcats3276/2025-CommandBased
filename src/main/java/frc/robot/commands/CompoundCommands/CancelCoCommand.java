@@ -26,7 +26,7 @@ public class CancelCoCommand extends SequentialCommandGroup{
                 new ManualWristCommand(s_Wrist, WristAxis),
                 new ManualArmCommand(s_Arm, ArmAxis),
                 new ManualElevatorCommand(s_Elevator, ElevatorAxis, NegativeElevatorAxis),
-                new InfeedCommand(s_Infeed, 0),
+                new InfeedCommand(s_Infeed, 0, 0),
                 new InstantCommand(() -> s_Climber.ManualStop()),
                 new InstantCommand(() -> s_Sensor.setInfeedState(false)),
                 new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_GROUND))

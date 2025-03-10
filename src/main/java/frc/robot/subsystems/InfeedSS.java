@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -18,7 +19,8 @@ import frc.robot.Constants.InfeedConstants;
 
 public class InfeedSS extends SubsystemBase{
 
-    private TalonFX m_infeedMotor;
+    private TalonFX m_infeedMotorLeft;
+    private TalonFX m_infeedMotorRight;
 
     private SimpleMotorFeedforward feedforward;
     private double infeedCurrent;
@@ -29,13 +31,33 @@ public class InfeedSS extends SubsystemBase{
     private double kV = 0;
     private double kA = 0;
 
-    private double speed;
+    private double left_Speed;
+    private double right_Speed;
 
     public InfeedSS(){
-        m_infeedMotor = new TalonFX(InfeedConstants.Infeed_Motor_ID);
-        m_infeedMotor.getConfigurator().apply(new TalonFXConfiguration());
-        m_infeedMotor.setNeutralMode(NeutralModeValue.Brake);
-        m_infeedMotor.setInverted(false);
+        m_infeedMotorLeft = new TalonFX(InfeedConstants.Infeed_Left_Motor_ID);
+        m_infeedMotorLeft.getConfigurator().apply(new TalonFXConfiguration());
+        m_infeedMotorLeft.setNeutralMode(NeutralModeValue.Brake);
+        m_infeedMotorLeft.setInverted(true);
+
+        
+        m_infeedMotorRight = new TalonFX(InfeedConstants.Infeed_Right_Motor_ID);
+        m_infeedMotorRight.getConfigurator().apply(new TalonFXConfiguration());
+        m_infeedMotorRight.setNeutralMode(NeutralModeValue.Brake);
+        m_infeedMotorRight.setInverted(false);
+
+        var leftConfigurator = m_infeedMotorLeft.getConfigurator();
+        var rightConfigurator = m_infeedMotorRight.getConfigurator();
+        var limitConfigs = new CurrentLimitsConfigs();
+
+        // enable stator current limit
+        limitConfigs.StatorCurrentLimit = 90;
+        limitConfigs.StatorCurrentLimitEnable = true;
+
+        leftConfigurator.apply(limitConfigs);
+        rightConfigurator.apply(limitConfigs);
+
+
 
         feedforward = new SimpleMotorFeedforward(kS, kV, kA);
 
@@ -60,35 +82,38 @@ public class InfeedSS extends SubsystemBase{
         switch (Mode) {
             
             case Stop:
-                m_infeedMotor.set(0);
+                m_infeedMotorLeft.set(0);
                 break;
         
             case SetSpeed:
-                m_infeedMotor.set(speed);
+                m_infeedMotorLeft.set(left_Speed);
+                m_infeedMotorRight.set(right_Speed);
                 break;
 
             case CurrentControl:
 
             case VoltageControl:
-                m_infeedMotor.setVoltage(infeedVoltage);
+                m_infeedMotorLeft.setVoltage(1);
+                m_infeedMotorRight.setVoltage(1);
                 
             case AmpControl:
-                // m_infeedMotor.setcontrol(infeedAmperage);
+                // m_infeedMotorLeft.setcontrol(infeedAmperage);
         }
 
-        SmartDashboard.putNumber("Infeed Motor Speed", speed);
-        SmartDashboard.putNumber("Amps", m_infeedMotor.getSupplyCurrent().getValue().in(Amps));
-        SmartDashboard.putNumber("Infeed Voltage", m_infeedMotor.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Infeed Constant Volts", m_infeedMotor.getMotorVoltage().getValue().in(Volts));
-        SmartDashboard.putNumber("Infeed Velocity", m_infeedMotor.getVelocity().getValue().in(RotationsPerSecond));
+        SmartDashboard.putNumber("Infeed Motor Speed", left_Speed);
+        SmartDashboard.putNumber("Amps", m_infeedMotorLeft.getSupplyCurrent().getValue().in(Amps));
+        SmartDashboard.putNumber("Infeed Voltage", m_infeedMotorLeft.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putNumber("Infeed Constant Volts", m_infeedMotorLeft.getMotorVoltage().getValue().in(Volts));
+        SmartDashboard.putNumber("Infeed Velocity", m_infeedMotorLeft.getVelocity().getValue().in(RotationsPerSecond));
     }
 
     public void Stop(){
         Mode = mode.Stop;
     }
 
-    public void setSpeed(double speed){
-        this.speed = speed;
+    public void setSpeed(double left_Speed, double right_Speed){
+        this.left_Speed = left_Speed;
+        this.right_Speed = right_Speed;
         Mode = mode.SetSpeed;
     }
 

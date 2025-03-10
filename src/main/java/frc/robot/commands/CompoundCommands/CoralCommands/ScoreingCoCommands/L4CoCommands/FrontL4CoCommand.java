@@ -118,7 +118,7 @@ public class FrontL4CoCommand extends SequentialCommandGroup{
                 // ),
                 new ElevatorPIDCommand(s_Elevator, ElevatorConstants.L4_INVERSE, ElevatorConstants.MAX_PID_OUTPUT),
                 new WristPIDCommand(s_Wrist, WristConstants.L4_INVERSE, WristConstants.MAX_PID_OUTPUT),
-                new InfeedCommand(s_Infeed, 0)
+                new InfeedCommand(s_Infeed, 0, 0)
             )
         );
         addRequirements(s_Wrist, s_Arm, s_Elevator, s_Infeed);
