@@ -67,15 +67,15 @@ public class TeleopSwerve extends Command {
         double LLRotationVal;
 
         if(autoAlign.getAsBoolean()){
-            // LLTranslationVal = s_Swerve.m_leftLimelight.calculateTranslationOutput_TA(0);
-            // LLStrafeVal = s_Swerve.m_leftLimelight.calculateTranslationOutput_TX(0);
-            // LLRotationVal = s_Swerve.m_leftLimelight.calculateRotationOutput(0);
+            // LLTranslationVal = s_Swerve.m_frontLeftLL.calculateTranslationOutput_TA(0);
+            // LLStrafeVal = s_Swerve.m_frontLeftLL.calculateTranslationOutput_TX(0);
+            // LLRotationVal = s_Swerve.m_frontLeftLL.calculateRotationOutput(0);
 
-            // LLTranslationVal = LLTranslationPIDController.calculate(100 - s_Swerve.m_leftLimelight.getTA(), 80);
+            // LLTranslationVal = LLTranslationPIDController.calculate(100 - s_Swerve.m_frontLeftLL.getTA(), 80);
             LLTranslationVal = 0;
 
-            if(s_Swerve.m_leftLimelight.getTV()){
-                LLStrafeVal = -LLStrafePIDController.calculate(s_Swerve.m_leftLimelight.getTX(), 20);
+            if(s_Swerve.m_frontLeftLL.getTV()){
+                LLStrafeVal = LLStrafePIDController.calculate(s_Swerve.m_frontLeftLL.getTX(), 0);
             }
             else{
                 LLStrafeVal = 0;
@@ -84,7 +84,7 @@ public class TeleopSwerve extends Command {
             if(rotationDebouncer.calculate(LLRotationPIDController.atSetpoint())){
                 LLRotationVal = 0;
             }
-            else if(s_Swerve.m_leftLimelight.getTV()){
+            else if(s_Swerve.m_frontLeftLL.getTV()){
                 LLRotationVal = s_Swerve.optimizedLLRotation();
             }
             else{

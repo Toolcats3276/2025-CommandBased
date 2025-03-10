@@ -25,8 +25,11 @@ public final class Constants {
         public static final Pose2d TAG_17_R_POSE2D = new Pose2d(3.705, 5.078, Rotation2d.fromDegrees(-60));
 
 
-        public static final Matrix<N3,N1> VISION_STD_DEV = VecBuilder.fill(0.1, 0.1, 9999);
-        public static final Matrix<N3,N1> STATE_STD_DEV = VecBuilder.fill(9999, 9999, 0.00001);
+        public static final Matrix<N3,N1> VISION_STD_DEV = VecBuilder.fill(1, 1, 9999);
+        public static final Matrix<N3,N1> STATE_STD_DEV = VecBuilder.fill(0.1, 0.1, 0.0001);
+
+        public static final double translationStdDevCoefficient = 5;
+        public static final double rotationStdDevCoefficient = 0.9;
     }
 
 
@@ -37,20 +40,20 @@ public final class Constants {
         //Infeeds
         public static final double COMP = 0.428;
 
-        public static final double CORAL_INFEED = 0.348;//.345
+        public static final double CORAL_INFEED = 0.345;//.345 before 3/8/25 //0.347 // 3/8/25 3.49
         // public static final double CORAL_SOURCE_INFEED = 0.533;
         public static final double CORAL_SOURCE_INFEED = 0.527;
 
 
-        public static final double ALGAE_INFEED = 0.425;//.376
-        // public static final double ALGAE_INFEED_L1 = .515;
+        public static final double ALGAE_INFEED = 0.425;//.425
+        public static final double ALGAE_INFEED_L1_Inverse = .53;
         public static final double ALGAE_INFEED_L1 = .586;
         public static final double ALGAE_INFEED_L2 = .586;
-        // public static final double ALGAE_INFEED_L2 = .532;
+        public static final double ALGAE_INFEED_L2_Inverse = .531;//.531
         public static final double ALGAE_INFEED_L2_COMP = .46;
 
         //Reef
-        public static final double L1 = 0;
+        public static final double L1 = 0.58;
         // public static final double L1_INVERSE = 0.422;
         public static final double L1_INVERSE = 0.40;
 
@@ -98,19 +101,19 @@ public final class Constants {
         public static final double ALGAE_INFEED_L1_COMP = .58;
 
         //Infeed
-        public static final double CORAL_INFEED = 0.42; // 0.415
+        public static final double CORAL_INFEED = 0.43; // 0.415 //0.42
         // public static final double CORAL_SOURCE_INFEED = 0.35;
-        public static final double CORAL_SOURCE_INFEED = 0.336;
+        public static final double CORAL_SOURCE_INFEED = 0.343;//.336
 
 
-        public static final double ALGAE_INFEED = 0.27;//.4
+        public static final double ALGAE_INFEED = 0.285;//.4
         public static final double ALGAE_INFEED_L1 = 0.73;//0.72
-        // public static final double ALGAE_INFEED_L1 = 0.215;
+        public static final double ALGAE_INFEED_L1_Inverse = 0.215;
         public static final double ALGAE_INFEED_L2 = .72;
-        // public static final double ALGAE_INFEED_L2 = .2;
+        public static final double ALGAE_INFEED_L2_Inverse = .23;
 
         //Reef
-        public static final double L1 = 0;
+        public static final double L1 = 0.78;
         // public static final double L1_INVERSE = 0.426;
         public static final double L1_INVERSE = 0.779;
 
@@ -146,13 +149,14 @@ public final class Constants {
         
         public static final double COMP = 0.1;
         // public static final double CORAL_SOURCE_INFEED = 1.48;
-        public static final double CORAL_SOURCE_INFEED = 2.2;
+        public static final double CORAL_SOURCE_INFEED = 2.55;//2.8
 
         //Infeed
         public static final double ALGAE_INFEED_Ground = 0.863;
-        // public static final double ALGAE_INFEED_L1 = 4.375;//4.5 high 4.3 low
-        public static final double ALGAE_INFEED_L1 = 1.65;//? high 1.5 low
-        public static final double ALGAE_INFEED_L2 = 5.6;
+        public static final double ALGAE_INFEED_L1_Inverse = 4.425;//4.5 high 4.3 low
+        public static final double ALGAE_INFEED_L1 = 1.25;//1.55
+        public static final double ALGAE_INFEED_L2 = 5.5;//5.6
+        public static final double ALGAE_INFEED_L2_Inverse = 8.4;//8.3
 
         //Reef
         public static final double L1 = 0.1;
@@ -195,6 +199,8 @@ public final class Constants {
         public static final double ALGAE_INFEED = 1;
         public static final double LEFT_CORAL_INFEED = 1;
         public static final double RIGHT_CORAL_INFEED = 0.6;
+
+        public static final double CORAL_SOURCE_INFEED = .25; //0.5
 
         public static final double IDLE_ALGAE_VOLTAGE = 1;
 
@@ -296,7 +302,7 @@ public final class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 0;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-25.927); //25.400
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-26.279); //25.400
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -306,7 +312,7 @@ public final class Constants {
             public static final int driveMotorID = 11;
             public static final int angleMotorID = 12;
             public static final int canCoderID = 1;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-129.375); //-126.826
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-130.253); //-126.826
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -316,7 +322,7 @@ public final class Constants {
             public static final int driveMotorID = 21;
             public static final int angleMotorID = 22;
             public static final int canCoderID = 2;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(14.941); //14.414
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(14.238); //14.414
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
@@ -326,7 +332,7 @@ public final class Constants {
             public static final int driveMotorID = 31;
             public static final int angleMotorID = 32;
             public static final int canCoderID = 3;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-60.556);//-57.392
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-60.029);//-57.392
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }

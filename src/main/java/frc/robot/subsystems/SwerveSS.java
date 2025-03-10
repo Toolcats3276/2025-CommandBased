@@ -22,6 +22,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -29,9 +30,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveSS extends SubsystemBase {
@@ -41,13 +45,21 @@ public class SwerveSS extends SubsystemBase {
     public static RobotConfig config;
     public static PathPlannerPath pathfindToPath;
     public BooleanSupplier alignLeft;
+
     
-    public final LimelightAssistant m_leftLimelight;
+    public final LimelightAssistant m_frontLeftLL;
+    public final LimelightAssistant m_frontRightLL;
+    public final LimelightAssistant m_backLeftLL;
+    public final LimelightAssistant m_backRightLL;
 
     public static SwerveDrivePoseEstimator m_poseEstimator;
 
-    public Field2d fieldPose;
+    public Field2d LLPose;
+    public Field2d BotPose;
     public boolean scoreLeft;
+
+    private final SendableChooser<Boolean> FlipAuto;
+
 
     public SwerveSS() {
         gyro = new Pigeon2(Swerve.pigeonID);
@@ -61,9 +73,13 @@ public class SwerveSS extends SubsystemBase {
             new SwerveModule(3, Swerve.Mod3.constants)
         };
 
-        m_leftLimelight = new LimelightAssistant("limelight", LimelightConstants.VISION_STD_DEV, false);
+        m_frontLeftLL = new LimelightAssistant("limelight-fl", LimelightConstants.VISION_STD_DEV, true);
+        m_frontRightLL = new LimelightAssistant("limelight-fr", LimelightConstants.VISION_STD_DEV, true);
+        m_backLeftLL = new LimelightAssistant("limelight-bl", LimelightConstants.VISION_STD_DEV, true);
+        m_backRightLL = new LimelightAssistant("limelight-br", LimelightConstants.VISION_STD_DEV, true);
 
-        fieldPose = new Field2d();
+        LLPose = new Field2d();
+        BotPose = new Field2d();
 
         swerveOdometry = new SwerveDriveOdometry(Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
         m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -73,6 +89,12 @@ public class SwerveSS extends SubsystemBase {
             getPose(),
             LimelightConstants.STATE_STD_DEV,
             LimelightConstants.VISION_STD_DEV);
+
+            FlipAuto = new SendableChooser<Boolean>();
+            FlipAuto.setDefaultOption("Don't Flip", false);
+            FlipAuto.addOption("Flip", true);
+
+            SmartDashboard.putData(FlipAuto);
 
         try{
             config = RobotConfig.fromGUISettings();
@@ -92,17 +114,18 @@ public class SwerveSS extends SubsystemBase {
                 new PIDConstants(8, 0, 0) // Rotation constants P = 1.5
             ),
             config,
-            () -> {
-                // Boolean supplier that controls when the path will be mirrored for the red alliance
-                // This will flip the path being followed to the red side of the field.
-                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+            () ->  false,
+            // () -> {
+            //     // Boolean supplier that controls when the path will be mirrored for the red alliance
+            //     // This will flip the path being followed to the red side of the field.
+            //     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
       
-                var alliance = DriverStation.getAlliance();
-                if (alliance.isPresent()) {
-                    return alliance.get() == DriverStation.Alliance.Red;
-                }
-                return false;
-            }, 
+            //     var alliance = DriverStation.getAlliance();
+            //     if (alliance.isPresent()) {
+            //         return alliance.get() == DriverStation.Alliance.Red;
+            //     }
+            //     return false;
+            // }, 
             this);
     }
 
@@ -188,8 +211,7 @@ public class SwerveSS extends SubsystemBase {
     }
 
     public Pose2d getPoseEstimate(){
-        // return m_poseEstimator.getEstimatedPosition();
-        return swerveOdometry.getPoseMeters();
+        return m_poseEstimator.getEstimatedPosition();
     }
 
     public void setPose(Pose2d pose) {
@@ -226,11 +248,10 @@ public class SwerveSS extends SubsystemBase {
     @Override
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
-        updatePoseEstimate();
+        // updatePoseEstimate();
 
-        
-        
-        fieldPose.setRobotPose(getPose());
+        // LLPose.setRobotPose(getPose());
+        BotPose.setRobotPose(getPose());
 
         for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
@@ -241,11 +262,15 @@ public class SwerveSS extends SubsystemBase {
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
         SmartDashboard.putNumber("LLRotationAngle", getLLRotationAngle());
 
-        SmartDashboard.putData("Field Pose", fieldPose);
+        SmartDashboard.putData("LL Pose", LLPose);
+        SmartDashboard.putData("Bot Pose", BotPose);
 
         SmartDashboard.putNumber("X Chassis Speed", getRobotSpeed().vxMetersPerSecond);
         SmartDashboard.putNumber("Y Chassis Speed", getRobotSpeed().vyMetersPerSecond);
         SmartDashboard.putNumber("Omega Chassis Speed", getRobotSpeed().omegaRadiansPerSecond);
+
+        
+        SmartDashboard.putBoolean("FlipAutoBuilder", AutoBuilder.shouldFlip());
 
     }
 
@@ -254,16 +279,34 @@ public class SwerveSS extends SubsystemBase {
             getGyroYaw(), 
             getModulePositions());
 
-        m_leftLimelight.updatePoseEstimates();
+        m_frontLeftLL.updatePoseEstimates();
+        m_frontRightLL.updatePoseEstimates();
+        m_backLeftLL.updatePoseEstimates();
+        m_backRightLL.updatePoseEstimates();
 
-        if(!m_leftLimelight.rejectUpdate()){
-            m_poseEstimator.setVisionMeasurementStdDevs(m_leftLimelight.getVisionMeasurementStdDevs());
-            m_poseEstimator.addVisionMeasurement(m_leftLimelight.getPoseEstimate(), m_leftLimelight.getTimestamp());
+        if(!m_frontLeftLL.rejectUpdate()){
+            m_poseEstimator.setVisionMeasurementStdDevs(m_frontLeftLL.proportionalVisionStdDevs());
+            m_poseEstimator.addVisionMeasurement(m_frontLeftLL.getPoseEstimate(), m_frontLeftLL.getTimestamp());
+        }
+
+        if(!m_frontRightLL.rejectUpdate()){
+            m_poseEstimator.setVisionMeasurementStdDevs(m_frontRightLL.proportionalVisionStdDevs());
+            m_poseEstimator.addVisionMeasurement(m_frontRightLL.getPoseEstimate(), m_frontRightLL.getTimestamp());
+        }
+
+        if(!m_backLeftLL.rejectUpdate()){
+            m_poseEstimator.setVisionMeasurementStdDevs(m_backLeftLL.proportionalVisionStdDevs());
+            m_poseEstimator.addVisionMeasurement(m_backLeftLL.getPoseEstimate(), m_backLeftLL.getTimestamp());
+        }
+
+        if(!m_backRightLL.rejectUpdate()){
+            m_poseEstimator.setVisionMeasurementStdDevs(m_backRightLL.proportionalVisionStdDevs());
+            m_poseEstimator.addVisionMeasurement(m_backRightLL.getPoseEstimate(), m_backRightLL.getTimestamp());
         }
     }
 
     // public void setPathfindingPath() throws FileVersionException, IOException, org.json.simple.parser.ParseException{
-    //     var FID = m_leftLimelight.getFiducialID();
+    //     var FID = m_frontLeftLL.getFiducialID();
 
     //     if(alignLeft.getAsBoolean()){
     //         // left side paths
@@ -327,40 +370,40 @@ public class SwerveSS extends SubsystemBase {
 
     public double getLLRotationAngle(){
         double LLRotation;
-        if(m_leftLimelight.getFiducialID() == 6){
+        if(m_frontLeftLL.getFiducialID() == 6){
             LLRotation = -60;
         }
-        else if(m_leftLimelight.getFiducialID() == 7){
+        else if(m_frontLeftLL.getFiducialID() == 7){
             LLRotation = 0;
         }
-        else if(m_leftLimelight.getFiducialID() == 8){
+        else if(m_frontLeftLL.getFiducialID() == 8){
             LLRotation = 60;
         }
-        else if(m_leftLimelight.getFiducialID() == 9){
+        else if(m_frontLeftLL.getFiducialID() == 9){
             LLRotation = 120;
         }
-        else if(m_leftLimelight.getFiducialID() == 10){
+        else if(m_frontLeftLL.getFiducialID() == 10){
             LLRotation = 180;
         }
-        else if(m_leftLimelight.getFiducialID() == 11){
+        else if(m_frontLeftLL.getFiducialID() == 11){
             LLRotation = -120;
         }
-        else if(m_leftLimelight.getFiducialID() == 17){
+        else if(m_frontLeftLL.getFiducialID() == 17){
             LLRotation = -60;
         }
-        else if(m_leftLimelight.getFiducialID() == 18){
+        else if(m_frontLeftLL.getFiducialID() == 18){
             LLRotation = 0;
         }
-        else if(m_leftLimelight.getFiducialID() == 19){
+        else if(m_frontLeftLL.getFiducialID() == 19){
             LLRotation = 60;
         }
-        else if(m_leftLimelight.getFiducialID() == 20){
+        else if(m_frontLeftLL.getFiducialID() == 20){
             LLRotation = 120;
         }
-        else if(m_leftLimelight.getFiducialID() == 21){
+        else if(m_frontLeftLL.getFiducialID() == 21){
             LLRotation = 180;
         }
-        else if(m_leftLimelight.getFiducialID() == 22){
+        else if(m_frontLeftLL.getFiducialID() == 22){
             LLRotation = -120;
         }
         else {
@@ -408,58 +451,58 @@ public class SwerveSS extends SubsystemBase {
         }
     }
 
-    public Transform2d getTransformationToReef(){
-        double tagID;
-        Transform2d robotTransform2d;
-        // Pose2d rightPose2D = m_RightLimelight.getPoseEstimate();
+    // public Transform2d getTransformationToReef(){
+    //     double tagID;
+    //     Transform2d robotTransform2d;
+    //     // Pose2d rightPose2D = m_RightLimelight.getPoseEstimate();
         
-        robotTransform2d = LimelightConstants.TAG_6_L_POSE2D.minus(getPoseEstimate());
+    //     // robotTransform2d = LimelightConstants.TAG_6_L_POSE2D.minus(getPoseEstimate());
 
-        // if (scoreLeft == true){
-        //     if(m_leftLimelight.getTV()){
-        //         tagID = m_leftLimelight.getFiducialID();
-        //         if(tagID == 6){
-        //             robotTransform2d = getPoseEstimate().minus(LimelightConstants.TAG_6_L_POSE2D);
-        //         }
-        //         else if(tagID == 17){
-        //             robotTransform2d = getPoseEstimate().minus(LimelightConstants.TAG_17_L_POSE2D);
-        //         }
-        //         else{
-        //             robotTransform2d = new Transform2d();
-        //         }
-        //     }
-        //     else{
-        //         robotTransform2d = new Transform2d();
-        //     }
-        // }
-        // else{
-        //     robotTransform2d = new Transform2d();
-        // }
+    //     // if (scoreLeft == true){
+    //     //     if(m_frontLeftLL.getTV()){
+    //     //         tagID = m_frontLeftLL.getFiducialID();
+    //     //         if(tagID == 6){
+    //     //             robotTransform2d = getPoseEstimate().minus(LimelightConstants.TAG_6_L_POSE2D);
+    //     //         }
+    //     //         else if(tagID == 17){
+    //     //             robotTransform2d = getPoseEstimate().minus(LimelightConstants.TAG_17_L_POSE2D);
+    //     //         }
+    //     //         else{
+    //     //             robotTransform2d = new Transform2d();
+    //     //         }
+    //     //     }
+    //     //     else{
+    //     //         robotTransform2d = new Transform2d();
+    //     //     }
+    //     // }
+    //     // else{
+    //     //     robotTransform2d = new Transform2d();
+    //     // }
 
 
-        // if (scoreLeft == false){
-        //     if(m_RightLimelight.getTV()){
-        //         tagID = m_RightLimelight.getFiducialID();
-        //         if(tagID == 6){
-        //             robotTransform2d = rightPose2D.minus(LimelightConstants.TAG_6_R_POSE2D);
-        //         }
-        //         else if(tagID == 17){
-        //             robotTransform2d = rightPose2D.minus(LimelightConstants.TAG_17_R_POSE2D);
-        //         }
-        //         else{
-        //             robotTransform2d = new Transform2d();
-        //         }
-        //     }
-        //     else{
-        //         robotTransform2d = new Transform2d();
-        //     }
-        // }
-        // else{
-        //     robotTransform2d = new Transform2d();
-        // }
+    //     // if (scoreLeft == false){
+    //     //     if(m_RightLimelight.getTV()){
+    //     //         tagID = m_RightLimelight.getFiducialID();
+    //     //         if(tagID == 6){
+    //     //             robotTransform2d = rightPose2D.minus(LimelightConstants.TAG_6_R_POSE2D);
+    //     //         }
+    //     //         else if(tagID == 17){
+    //     //             robotTransform2d = rightPose2D.minus(LimelightConstants.TAG_17_R_POSE2D);
+    //     //         }
+    //     //         else{
+    //     //             robotTransform2d = new Transform2d();
+    //     //         }
+    //     //     }
+    //     //     else{
+    //     //         robotTransform2d = new Transform2d();
+    //     //     }
+    //     // }
+    //     // else{
+    //     //     robotTransform2d = new Transform2d();
+    //     // }
 
-        return robotTransform2d;
+    //     return robotTransform2d;
 
-    }
+    // }
 
 }

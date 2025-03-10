@@ -15,11 +15,11 @@ import frc.robot.subsystems.WristSS;
 import frc.robot.subsystems.InfeedSS;
 import frc.robot.subsystems.SensorSS;
 
-public class AlgaeInfeedL1SensorCoCommand extends SequentialCommandGroup{
+public class AlgaeInfeedL1SensorInverseCoCommand extends SequentialCommandGroup{
 
 
 
-    public AlgaeInfeedL1SensorCoCommand(WristSS s_Wrist, ArmSS s_Arm, ElevatorSS s_Elevator, InfeedSS s_Infeed, SensorSS s_Sensor) {
+    public AlgaeInfeedL1SensorInverseCoCommand(WristSS s_Wrist, ArmSS s_Arm, ElevatorSS s_Elevator, InfeedSS s_Infeed, SensorSS s_Sensor) {
 
         addCommands(
             new RepeatCommand(
@@ -40,9 +40,9 @@ public class AlgaeInfeedL1SensorCoCommand extends SequentialCommandGroup{
                         ),
                     //on false
                         new ParallelCommandGroup(
-                            new ArmPIDCommand(s_Arm, ArmConstants.ALGAE_INFEED_L1, ArmConstants.MAX_PID_OUTPUT),
-                            new WristPIDCommand(s_Wrist, WristConstants.ALGAE_INFEED_L1, WristConstants.MAX_PID_OUTPUT),
-                            new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ALGAE_INFEED_L1, ElevatorConstants.MAX_PID_OUTPUT),
+                            new ArmPIDCommand(s_Arm, ArmConstants.ALGAE_INFEED_L1_Inverse, ArmConstants.MAX_PID_OUTPUT),
+                            new WristPIDCommand(s_Wrist, WristConstants.ALGAE_INFEED_L1_Inverse, WristConstants.MAX_PID_OUTPUT),
+                            new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ALGAE_INFEED_L1_Inverse, ElevatorConstants.MAX_PID_OUTPUT),
                             new InfeedCommand(s_Infeed, InfeedConstants.ALGAE_INFEED, InfeedConstants.ALGAE_INFEED)
                             // new InstantCommand(() -> s_Sensor.setAlgaeInfeedState(InfeedConstants.ALGAE_INFEED_L2))
                         ),

@@ -17,7 +17,7 @@ import frc.robot.subsystems.SensorSS;
 
 public class CoralSourceInfeedSensorCoCommand extends SequentialCommandGroup{
 
-
+public static boolean endCommand = false;
 
     public CoralSourceInfeedSensorCoCommand(WristSS s_Wrist, ArmSS s_Arm, ElevatorSS s_Elevator, InfeedSS s_Infeed, SensorSS s_Sensor) {
 
@@ -25,25 +25,20 @@ public class CoralSourceInfeedSensorCoCommand extends SequentialCommandGroup{
             new RepeatCommand(  
                 new ConditionalCommand(
                     //while true
-                    new ParallelCommandGroup(
-                        // new ArmPIDCommand(s_Arm, ArmConstants.COMP),
-                        // new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.MAX_PID_OUTPUT),
-                        // new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP),
-                        new SequentialCommandGroup(
-                            new InfeedCommand(s_Infeed, 0, 0),
-                            new InfeedCommand(s_Infeed, -0.15, -0.15),
-                            new WaitCommand(0.25),
-                            new InfeedCommand(s_Infeed, 0, 0),
-                            new InstantCommand(() -> s_Sensor.setEndCoralInfeedCommand(true))
-                        )
+                    new SequentialCommandGroup(
+                        new InfeedCommand(s_Infeed, 0, 0),
+                        new InfeedCommand(s_Infeed, -0.145, -0.145),
+                        new WaitCommand(0.18),
+                        new InfeedCommand(s_Infeed, 0, 0),
+                        new InstantCommand(() -> endCommand = true)
                     ),
                     //while false
                     new ParallelCommandGroup(
-                        new InstantCommand(() -> s_Sensor.setEndCoralInfeedCommand(false)),
+                        new InstantCommand(() -> endCommand = false),
                         new ArmPIDCommand(s_Arm, ArmConstants.CORAL_SOURCE_INFEED, ArmConstants.MAX_PID_OUTPUT),
                         new WristPIDCommand(s_Wrist, WristConstants.CORAL_SOURCE_INFEED, WristConstants.MAX_PID_OUTPUT),
                         new ElevatorPIDCommand(s_Elevator, ElevatorConstants.CORAL_SOURCE_INFEED, ElevatorConstants.MAX_PID_OUTPUT),
-                        new InfeedCommand(s_Infeed, InfeedConstants.LEFT_CORAL_INFEED, InfeedConstants.RIGHT_CORAL_INFEED)
+                        new InfeedCommand(s_Infeed, InfeedConstants.CORAL_SOURCE_INFEED, InfeedConstants.CORAL_SOURCE_INFEED)
                         // new InfeedCommand(s_Infeed, 0)
                     ),
 
@@ -51,6 +46,8 @@ public class CoralSourceInfeedSensorCoCommand extends SequentialCommandGroup{
                     () -> s_Sensor.coralSensed()
                 )
             )
+            .until(() -> endCommand)
+            // .finallyDo(() -> new InstantCommand(() -> endCommand = false))
         );
         addRequirements(s_Wrist, s_Arm, s_Elevator, s_Infeed);
     }

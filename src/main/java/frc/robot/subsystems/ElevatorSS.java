@@ -79,7 +79,7 @@ public class ElevatorSS extends SubsystemBase{
                 break;
 
             case Manual:
-                output = MathUtil.clamp(ManualVal, -0.25, 0.25);
+                output = MathUtil.clamp(ManualVal, -0.1, 0.1);
                 m_leadElevatorMotor.set(output);
                 break;
 

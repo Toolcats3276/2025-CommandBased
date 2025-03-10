@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -16,21 +19,28 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.Swerve;
 import frc.robot.commands.*;
+import frc.robot.commands.AutoAlignmentCommands.autoAlignmentCommand;
 import frc.robot.commands.BaseCommands.Climber.ClimberIn;
 import frc.robot.commands.BaseCommands.ElevatorCommands.ElevatorPIDCommand;
 import frc.robot.commands.CompoundCommands.CancelCoCommand;
 import frc.robot.commands.CompoundCommands.CompCoCommand;
 import frc.robot.commands.CompoundCommands.ShootCoCommand;
+import frc.robot.commands.CompoundCommands.SuckIn;
+import frc.robot.commands.CompoundCommands.SuckOut;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.AlgaeInfeedCycleCoCommand;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.AlgaeInfeedSensorCoCommand;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeedCommands.AlgaeInfeedL1CoCommand;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeedCommands.AlgaeInfeedL1SensorCoCommand;
+import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeedCommands.AlgaeInfeedL1SensorInverseCoCommand;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeedCommands.AlgaeInfeedL2SensorCoCommand;
+import frc.robot.commands.CompoundCommands.AlgaeCommands.AlgaeInfeeds.ReefInfeedCommands.AlgaeInfeedL2SensorInverseCoCommand;
 import frc.robot.commands.CompoundCommands.AlgaeCommands.ScoringCommands.AlgaeToggleScoreCoCommand;
 import frc.robot.commands.CompoundCommands.Climb.ClimbCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.CoralInfeedCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.CoralInfeedSensorCommand;
+import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.CoralSourceInfeedSensorCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.ToggleCoralInfeedCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.CoralInfeedCommands.ToggleCoralInfeedStateCoCommand;
 import frc.robot.commands.CompoundCommands.CoralCommands.ScoreingCoCommands.L1CoCommands.L1InverseCoCommand;
@@ -86,7 +96,9 @@ public class RobotContainer {
 
     private final JoystickButton AlgaeInfeed = new JoystickButton(driver, 4);
     private final JoystickButton AlgaeInfeedL1 = new JoystickButton(driver, 14);
+    private final JoystickButton AlgaeInfeedL1Inverse = new JoystickButton(driver, 13);
     private final JoystickButton AlgaeInfeedL2 = new JoystickButton(driver, 15);
+    private final JoystickButton AlgaeInfeedL2Inverse = new JoystickButton(driver, 12);
 
 
     // private final JoystickButton TestPoint1 = new JoystickButton(driver, 14);
@@ -104,6 +116,9 @@ public class RobotContainer {
     private final JoystickButton Co_Y = new JoystickButton(xboxController, XboxController.Button.kY.value);
     private final JoystickButton Co_Start = new JoystickButton(xboxController, XboxController.Button.kStart.value);
     private final JoystickButton Co_LeftStick = new JoystickButton(xboxController, XboxController.Button.kLeftStick.value);
+
+    private final JoystickButton SuckIn = new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton SuckOut = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
 
     private final POVButton top_Left = new POVButton(driver, 315);
     private final POVButton middle_Left = new POVButton(driver, 270);
@@ -157,8 +172,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("Back L4", new L4CoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed));
         NamedCommands.registerCommand("Shoot", new ShootCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor));
         NamedCommands.registerCommand("Comp", new CompCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
+
         NamedCommands.registerCommand("Infeed", new CoralInfeedSensorCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
             .until(() -> CoralInfeedSensorCommand.endCommand));
+
+        NamedCommands.registerCommand("Source Infeed", new CoralSourceInfeedSensorCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
+            .until(() -> CoralSourceInfeedSensorCoCommand.endCommand));
         
         
         AutoChooser = new SendableChooser<Command>();
@@ -168,10 +187,16 @@ public class RobotContainer {
         // AutoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
         // AutoChooser.addOption("S Test Auto", new PathPlannerAuto("S Test Auto"));
         // AutoChooser.addOption("Week Zero", new PathPlannerAuto("Week Zero"));
-        AutoChooser.addOption("4G", new PathPlannerAuto("4G"));
-        AutoChooser.addOption("1P", new PathPlannerAuto("1P"));
+        // AutoChooser.addOption("4G", new PathPlannerAuto("4G"));
+        AutoChooser.addOption("1P", new PathPlannerAuto("LeftWall"));
+        AutoChooser.addOption("Left Ground", new PathPlannerAuto("Left Ground"));
+        AutoChooser.addOption("Right Ground", new PathPlannerAuto("Right Ground"));
 
-        SmartDashboard.putData(AutoChooser);        
+        AutoChooser.addOption("Left Source", new PathPlannerAuto("Left Source"));
+        AutoChooser.addOption("Right Source", new PathPlannerAuto("Right Source"));
+        // AutoChooser.addOption("3L4L", new PathPlannerAuto("3L4L"));
+
+        SmartDashboard.putData(AutoChooser);                
 
         // Configure the button bindings
         configureButtonBindings();
@@ -200,28 +225,33 @@ public class RobotContainer {
 
 
         // good infeed commandsVVVVVVV
-        CoralInfeed.onTrue(new ToggleCoralInfeedCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor)
-            .until(() -> s_Sensor.endCoralInfeedCommand())
-            .handleInterrupt(() -> new InstantCommand(() -> s_Sensor.setInfeedState(false))));
+        CoralInfeed.onTrue(new ToggleCoralInfeedCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor));
+            // .until(() -> s_Sensor.endCoralInfeedCommand())
+            // .finallyDo(() -> new InstantCommand(() -> s_Sensor.setInfeedState(false))));
 
         // CoralInfeed.onTrue(new InstantCommand(() -> s_Sensor.toggleInfeedState())
         //     .handleInterrupt(() -> new InstantCommand(() -> s_Sensor.setInfeedState(false))));
         CoralInfeed.onTrue(new ToggleCoralInfeedStateCoCommand(s_Sensor)
-            .handleInterrupt(() -> new InstantCommand(() -> s_Sensor.setInfeedState(false))));
+            .finallyDo(() -> new InstantCommand(() -> s_Sensor.setInfeedState(true))));
 
         AlgaeInfeed.onTrue(new AlgaeInfeedSensorCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
             .until(() -> s_Sensor.algaeInfeedDelay()));
+            
         AlgaeInfeedL1.onTrue(new AlgaeInfeedL1SensorCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
             .until(() -> s_Sensor.algaeInfeedDelay()));
-        // AlgaeInfeedL1.onTrue(new AlgaeInfeedL1CoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
+        AlgaeInfeedL1Inverse.onTrue(new AlgaeInfeedL1SensorInverseCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
+            .until(() -> s_Sensor.algaeInfeedDelay()));
+
+        AlgaeInfeedL2.onTrue(new AlgaeInfeedL2SensorCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
+            .until(() -> s_Sensor.algaeInfeedDelay()));
+        AlgaeInfeedL2Inverse.onTrue(new AlgaeInfeedL2SensorInverseCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
+            .until(() -> s_Sensor.algaeInfeedDelay()));
         //^^^^^^^^
 
 
         // CoralInfeed.onTrue(new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ELEVATOR_TEST_POINT));
         // AlgaeInfeed.onTrue(new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ELEVATOR_TEST_POINT_2));
 
-        AlgaeInfeedL2.onTrue(new AlgaeInfeedL2SensorCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
-            .until(() -> s_Sensor.algaeInfeedDelay()));
         // AlgaeInfeed.onTrue(new AlgaeInfeedSensorL1CoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor)
             // .until(() -> s_Sensor.algaeInfeedDebouncer()));
         // AlgaeInfeed.onTrue(new ToggleAlgaeInfeedCoCommand(s_Arm, s_Infeed, s_Wrist, s_Elevator, s_Sensor, Comp)
@@ -279,8 +309,8 @@ public class RobotContainer {
 
         Co_Start.onTrue(new InstantCommand(() -> s_Climber.setSpeed(0)));
         // Co_X.onTrue(new InstantCommand(() -> s_Climber.setSpeed(1)));
-        Co_X.onTrue(new ClimberIn(s_Climber));
-        Co_Y.onTrue(new InstantCommand(() -> s_Climber.setSpeed(-1)));
+        // Co_X.onTrue(new ClimberIn(s_Climber));
+        // Co_Y.onTrue(new InstantCommand(() -> s_Climber.setSpeed(-1)));
         Co_LeftStick.onTrue(new ClimbCoCommand(s_Wrist, s_Arm, s_Elevator, s_Climber));
 
 
@@ -289,6 +319,11 @@ public class RobotContainer {
 
         // TestPoint1.onTrue(new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ELEVATOR_TEST_POINT, ElevatorConstants.MAX_PID_OUTPUT));
         // TestPoint2.onTrue(new ElevatorPIDCommand(s_Elevator, ElevatorConstants.ELEVATOR_TEST_POINT_2, ElevatorConstants.MAX_PID_OUTPUT));
+
+        // Co_X.onTrue(new CoralSourceInfeedSensorCoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
+
+        SuckIn.onTrue(new SuckIn(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
+        SuckOut.onTrue(new SuckOut(s_Wrist, s_Arm, s_Elevator, s_Infeed, s_Sensor));
     }
 
     /**

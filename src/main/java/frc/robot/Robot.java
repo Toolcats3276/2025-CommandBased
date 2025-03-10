@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.subsystems.SwerveSS;
 import frc.robot.vision.LimelightHelpers;
 import au.grapplerobotics.CanBridge;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -71,6 +72,19 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    // if(s_Swerve.m_frontRightLL.getTV()){
+    //   s_Swerve.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-fr").pose);
+    //   s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), s_Swerve.m_poseEstimator.getEstimatedPosition());
+    // }
+    // else if(s_Swerve.m_backLeftLL.getTV()){
+    //   s_Swerve.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-fl").pose);
+    //   s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), s_Swerve.m_poseEstimator.getEstimatedPosition());
+    // }
+    // else{      
+    // s_Swerve.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), new Pose2d());
+    // s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), new Pose2d());
+    // }
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -103,10 +117,18 @@ public class Robot extends TimedRobot {
     // else{
 
 
-    
-      // SwerveSS.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), LimelightHelpers.getBotPose2d_wpiBlue("limelight"));
-      // s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), SwerveSS.m_poseEstimator.getEstimatedPosition());
-    
+      // if(s_Swerve.m_frontRightLL.getTV()){
+      //   s_Swerve.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-fr").pose);
+      //   s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), s_Swerve.m_poseEstimator.getEstimatedPosition());
+      // }
+      // else if(s_Swerve.m_backLeftLL.getTV()){
+      //   s_Swerve.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-fl").pose);
+      //   s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), s_Swerve.m_poseEstimator.getEstimatedPosition());
+      // }
+      // else{      
+      //   s_Swerve.m_poseEstimator.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), new Pose2d());
+      //   s_Swerve.swerveOdometry.resetPosition(s_Swerve.getGyroYaw(), s_Swerve.getModulePositions(), new Pose2d());
+      // }
     
     
       // }
@@ -121,8 +143,6 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    s_Swerve.m_leftLimelight.setVisionMeasurementStdDevs(Constants.LimelightConstants.VISION_STD_DEV);
-    s_Swerve.m_leftLimelight.setMegaTagMode(false);
 
   }
 

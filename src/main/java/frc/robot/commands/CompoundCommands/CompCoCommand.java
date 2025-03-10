@@ -39,6 +39,7 @@ public class CompCoCommand extends SequentialCommandGroup{
                         ), 
                         // before elevator is down
                         new ParallelCommandGroup(
+                            new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.ALGAE_INFEED_PID_OUTPUT),
                             new InstantCommand(() -> endCommand = false),
                             new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
                             new InfeedCommand(s_Infeed, 0, 0),
@@ -84,6 +85,7 @@ public class CompCoCommand extends SequentialCommandGroup{
                                   
                     // before elevator is down
                         new ParallelCommandGroup(
+                            new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.ALGAE_INFEED_PID_OUTPUT),
                             new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT),
                             new InfeedCommand(s_Infeed, 0, 0),
                             new InstantCommand(() -> s_Sensor.setInfeedState(false)),

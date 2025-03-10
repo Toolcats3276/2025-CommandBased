@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.SwerveSS;
 import frc.robot.vision.LimelightHelpers.PoseEstimate;
 
@@ -317,18 +318,17 @@ public class LimelightAssistant {
         }
     }
 
+    public double getDistance(){
+        var distanceFromPrimaryTag =
+        LimelightHelpers.getTargetPose3d_CameraSpace(limelightName).getTranslation().getDistance(LimelightHelpers.getBotPose3d(limelightName).getTranslation());
+        return distanceFromPrimaryTag;
+    }
 
-    // public Matrix<N3,N1> proportionalStdDev(){
-    //     Translation2d tagTranslation2d = LimelightHelpers.getTargetPose3d_RobotSpace(limelightName).getTranslation().toTranslation2d();
-    //     double tagDistance = tagTranslation2d.getNorm();
-    //     Matrix<N3,N1> proportionalStdDev = VecBuilder.fill(tagDistance * 1, tagDistance * 1, 99999999);
-    //     return proportionalStdDev;
-    // }
-    public double getTagDistance(){
-        Translation3d tagTranslation3d = LimelightHelpers.getTargetPose3d_RobotSpace(limelightName).getTranslation();
-        double tagDistance = tagTranslation3d.getNorm();
-        Matrix<N3,N1> proportionalStdDev = VecBuilder.fill(tagDistance * 1, tagDistance * 1, 99999999);
-        return tagDistance;
+    public Matrix<N3, N1> proportionalVisionStdDevs() {
+        var translationStdDev = LimelightConstants.translationStdDevCoefficient * Math.pow(getDistance(), 2);
+        // var rotationStdDev = LimelightConstants.rotationStdDevCoefficient * Math.pow(getDistance(), 2);
+
+        return VecBuilder.fill(translationStdDev, translationStdDev, 9999999);
     }
 
 

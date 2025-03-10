@@ -28,16 +28,16 @@ public class AlgaeInfeedL2SensorCoCommand extends SequentialCommandGroup{
                 new ConditionalCommand(
                     //on true
                         new ParallelCommandGroup(
-                            new SequentialCommandGroup(
-                                new WaitCommand(0.375),
-                                new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.ALGAE_INFEED_PID_OUTPUT),
-                                new WaitCommand(0.5),
-                                new ParallelCommandGroup(
-                                    new ArmPIDCommand(s_Arm, ArmConstants.ALGAE_INFEED_L2_COMP, ArmConstants.ALGAE_INFEED_PID_OUTPUT),
-                                    new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT)
-                                ),
-                                new InstantCommand(() -> endCommand = true)
-                                ),
+                            // new SequentialCommandGroup(
+                            //     new WaitCommand(0.375),
+                            //     new WristPIDCommand(s_Wrist, WristConstants.COMP, WristConstants.ALGAE_INFEED_PID_OUTPUT),
+                            //     new WaitCommand(0.5),
+                            //     new ParallelCommandGroup(
+                            //         new ArmPIDCommand(s_Arm, ArmConstants.ALGAE_INFEED_L2_COMP, ArmConstants.ALGAE_INFEED_PID_OUTPUT),
+                            //         new ElevatorPIDCommand(s_Elevator, ElevatorConstants.COMP, ElevatorConstants.MAX_PID_OUTPUT)
+                            //     ),
+                            //     new InstantCommand(() -> endCommand = true)
+                            //     ),
                             new InstantCommand(() -> s_Infeed.setVoltage(InfeedConstants.IDLE_ALGAE_VOLTAGE))
                         ),
                     //on false

@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4G1"
+                  "pathName": "CoralL Wall-1"
                 }
               },
               {
@@ -21,13 +21,13 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.25
+                        "waitTime": 0.5
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Back L4"
+                        "name": "FrontL4"
                       }
                     }
                   ]
@@ -39,7 +39,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.65
+            "waitTime": 0.55
           }
         },
         {
@@ -49,13 +49,19 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4G2"
+                  "pathName": "CoralL Wall-X2"
                 }
               },
               {
@@ -63,9 +69,15 @@
                 "data": {
                   "commands": [
                     {
+                      "type": "named",
+                      "data": {
+                        "name": "Comp"
+                      }
+                    },
+                    {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.75
                       }
                     },
                     {
@@ -81,19 +93,13 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4G3"
+                  "pathName": "Copy of CoralL Wall-X3"
                 }
               },
               {
@@ -103,7 +109,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.65
+                        "waitTime": 0.5
                       }
                     },
                     {
@@ -121,7 +127,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.65
+            "waitTime": 0.25
           }
         },
         {
@@ -129,11 +135,17 @@
           "data": {
             "name": "Shoot"
           }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.3
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Tests",
   "choreoAuto": false
 }
