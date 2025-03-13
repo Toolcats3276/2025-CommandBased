@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RG1"
+                  "pathName": "Right Ground 1"
                 }
               },
               {
@@ -21,7 +21,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.15
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -41,12 +41,6 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.1
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Shoot"
@@ -55,7 +49,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.3
                 }
               },
               {
@@ -65,7 +59,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "RG2"
+                        "pathName": "Right Ground 2"
                       }
                     },
                     {
@@ -75,7 +69,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.25
+                              "waitTime": 0.2
                             }
                           },
                           {
@@ -87,7 +81,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.75
+                              "waitTime": 0.2
                             }
                           },
                           {
@@ -112,7 +106,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RG3"
+                  "pathName": "Right Ground 3"
                 }
               },
               {
@@ -156,7 +150,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.5
+                  "waitTime": 0.3
                 }
               }
             ]
@@ -166,23 +160,29 @@
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RG4"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "Infeed"
+                        "waitTime": 0.2
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Ground 4"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Infeed"
                 }
               }
             ]
@@ -195,7 +195,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RG5"
+                  "pathName": "Right Ground 5"
                 }
               },
               {
@@ -227,7 +227,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.1
+                  "waitTime": 0.2
                 }
               },
               {

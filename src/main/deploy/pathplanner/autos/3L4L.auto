@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3L4L-1"
+                  "pathName": "Left Ground 1"
                 }
               },
               {
@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3L4L-2"
+                  "pathName": "Left Ground 2"
                 }
               },
               {
@@ -84,6 +84,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Source",
+  "folder": null,
   "choreoAuto": false
 }

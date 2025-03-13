@@ -56,11 +56,8 @@ public class ShootCoCommand extends SequentialCommandGroup{
                                 new WaitCommand(0.25),//FLIP BACK DELAY
                                 new WristPIDCommand(s_Wrist, WristConstants.L4_FLIP_BACK, WristConstants.MAX_PID_OUTPUT)
                             ),
-                            new ConditionalCommand(
-                                new InfeedCommand(s_Infeed, InfeedConstants.LEFT_CORAL_INFEED, InfeedConstants.RIGHT_CORAL_INFEED),
-                                new InfeedCommand(s_Infeed, -InfeedConstants.CORAL_SHOT, -InfeedConstants.CORAL_SHOT),
-                                () -> s_Arm.returnSetPoint() == ArmConstants.CORAL_INFEED
-                            ),
+                            
+                            new InfeedCommand(s_Infeed, -InfeedConstants.CORAL_SHOT, -InfeedConstants.CORAL_SHOT),
 
                             // new InfeedCommand(s_Infeed, -InfeedConstants.CORAL_SHOT, -InfeedConstants.CORAL_SHOT), 
 

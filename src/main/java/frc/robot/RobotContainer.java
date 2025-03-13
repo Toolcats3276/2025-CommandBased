@@ -148,6 +148,7 @@ public class RobotContainer {
     private final InfeedSS s_Infeed = new InfeedSS();
     private final WristSS s_Wrist = new WristSS();
     private final ClimberSS s_Climber = new ClimberSS();
+    private final LEDSS s_LED = new LEDSS();
     // private final PoseEstimation s_PoseEstimation = new PoseEstimation(s_Swerve, m_leftLimelight);
     // private final ReefAlignment s_ReefAlignment = new ReefAlignment(m_leftLimelight, s_PoseEstimation);
     // private final PoseEstimation s_PoseEstimation = new PoseEstimation(s_Swerve, m_leftLimelight);
@@ -164,9 +165,14 @@ public class RobotContainer {
                 () -> robotCentric.getAsBoolean(),
                 () -> autoAlign.getAsBoolean(),
                 s_Elevator
-                
             )
         );
+
+        s_LED.setDefaultCommand(
+            new LEDDefault(s_LED, s_Sensor, s_Arm)
+        );
+
+        
 
         NamedCommands.registerCommand("FrontL4", new FrontL4CoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed));
         NamedCommands.registerCommand("Back L4", new L4CoCommand(s_Wrist, s_Arm, s_Elevator, s_Infeed));
@@ -184,19 +190,24 @@ public class RobotContainer {
     
         AutoChooser.setDefaultOption("None", new PrintCommand("carson is a brick"));
 
-        // AutoChooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
-        // AutoChooser.addOption("S Test Auto", new PathPlannerAuto("S Test Auto"));
         // AutoChooser.addOption("Week Zero", new PathPlannerAuto("Week Zero"));
         // AutoChooser.addOption("4G", new PathPlannerAuto("4G"));
-        AutoChooser.addOption("1P", new PathPlannerAuto("LeftWall"));
+        // AutoChooser.addOption("1P", new PathPlannerAuto("LeftWall"));
+        // AutoChooser.addOption("3L4L", new PathPlannerAuto("3L4L"));
+
         AutoChooser.addOption("Left Ground", new PathPlannerAuto("Left Ground"));
         AutoChooser.addOption("Right Ground", new PathPlannerAuto("Right Ground"));
 
+        AutoChooser.addOption("Mid Left Ground", new PathPlannerAuto("Mid Left Ground"));
+        AutoChooser.addOption("Mid Right Ground", new PathPlannerAuto("Mid Right Ground"));
+
         AutoChooser.addOption("Left Source", new PathPlannerAuto("Left Source"));
         AutoChooser.addOption("Right Source", new PathPlannerAuto("Right Source"));
-        // AutoChooser.addOption("3L4L", new PathPlannerAuto("3L4L"));
 
-        SmartDashboard.putData(AutoChooser);                
+        SmartDashboard.putData(AutoChooser);   
+        
+        SmartDashboard.putNumber("Light Timer", LEDDefault.blinkTimer.get());
+
 
         // Configure the button bindings
         configureButtonBindings();

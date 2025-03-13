@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Ground 1"
+                  "pathName": "RG1"
                 }
               },
               {
@@ -21,7 +21,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.25
+                        "waitTime": 0.15
                       }
                     },
                     {
@@ -41,6 +41,12 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "Shoot"
@@ -49,7 +55,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.3
+                  "waitTime": 0.5
                 }
               },
               {
@@ -59,7 +65,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Left Ground 2"
+                        "pathName": "RG2"
                       }
                     },
                     {
@@ -81,7 +87,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 0.2
+                              "waitTime": 0.75
                             }
                           },
                           {
@@ -106,7 +112,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Ground 3"
+                  "pathName": "RG3"
                 }
               },
               {
@@ -150,39 +156,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.3
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.2
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Left Ground 4"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Infeed"
+                  "waitTime": 0.5
                 }
               }
             ]
@@ -195,7 +169,33 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Ground 5"
+                  "pathName": "RG4"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Infeed"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RG5"
                 }
               },
               {
@@ -227,7 +227,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 0.2
+                  "waitTime": 0.1
                 }
               },
               {

@@ -4,10 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "1P",
-    "3L4L",
     "Left Ground",
     "Left Source",
     "LeftWall",
+    "Mid Left Ground",
+    "Mid Right Ground",
     "Right Ground",
     "Right Source",
     "Test"

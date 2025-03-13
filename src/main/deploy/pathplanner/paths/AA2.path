@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 0.741,
-        "y": 5.88725
+        "y": 5.887
       },
       "prevControl": {
         "x": 3.2759999999999985,
-        "y": 6.29675
+        "y": 6.2965
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,11 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.845,
-      "maxWaypointRelativePos": 0.9478908188585585,
+      "minWaypointRelativePos": 0.95,
+      "maxWaypointRelativePos": 0.9736972704714668,
       "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 1.5,
+        "maxVelocity": 0.1,
+        "maxAcceleration": 0.1,
         "maxAngularVelocity": 572.958,
         "maxAngularAcceleration": 1313.0,
         "nominalVoltage": 12.0,
@@ -45,11 +45,11 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.95,
-      "maxWaypointRelativePos": 0.9736972704714668,
+      "minWaypointRelativePos": 0.845,
+      "maxWaypointRelativePos": 0.9478908188585585,
       "constraints": {
-        "maxVelocity": 0.1,
-        "maxAcceleration": 0.1,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 572.958,
         "maxAngularAcceleration": 1313.0,
         "nominalVoltage": 12.0,
@@ -85,7 +85,7 @@
     "rotation": -171.158
   },
   "reversed": false,
-  "folder": "Left Ground",
+  "folder": "Mid Left Ground",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
